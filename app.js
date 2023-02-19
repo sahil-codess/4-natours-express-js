@@ -14,9 +14,16 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  req.requestedTime = new Date().toISOString();
+  next();
+});
+
 const getAllTours = (req, res) => {
+  console.log(req.requestedTime);
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestedTime,
     results: tours.length,
     data: {
       tours,

@@ -9,12 +9,12 @@ exports.getAllTours = async (req, res) => {
   try {
     console.log(req.query);
     // Build the query
-    // 1) Filtering
+    // 1A) Filtering
     const queryObj = { ...req.query };
     const excludeFields = ['page', 'sort', 'limit', 'fields'];
     excludeFields.forEach((el) => delete queryObj[el]);
 
-    // 2) Advanced filtering
+    // 2B) Advanced filtering
     let querStr = JSON.stringify(queryObj);
     querStr = querStr.replace(
       /\b(gte|gt|lte|lt|ne|in)\b/g,
@@ -26,7 +26,12 @@ exports.getAllTours = async (req, res) => {
     // { duration: { gte: '5' }, difficulty: 'easy' }// this is the query object that we need to put tht $ sign in it...
     // gte, gt, lte, lt
 
-    const query = Tour.find(JSON.parse(querStr));
+    let query = Tour.find(JSON.parse(querStr));
+
+    // 2) Sorting
+    if (req.query.sort) {
+      query = query.sort(req.query.sort);
+    }
 
     // const query = Tour.find().where('duration').equals(5).where('difficulty').where("easy")
 

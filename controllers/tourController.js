@@ -7,10 +7,24 @@ const Tour = require('./../models/tourModel');
 
 exports.getAllTours = async (req, res) => {
   try {
+    console.log(req.query);
     // Build the query
-    const queryObj = { ...req.query }
+    // 1) Filtering
+    const queryObj = { ...req.query };
     const excludeFields = ['page', 'sort', 'limit', 'fields'];
-    excludeFields.forEach(el => delete queryObj[el]);
+    excludeFields.forEach((el) => delete queryObj[el]);
+
+    // 2) Advanced filtering
+    let querStr = JSON.stringify(queryObj);
+    querStr = querStr.replace(
+      /\b(gte|gt|lte|lt|ne|in)\b/g,
+      (match) => `$${match}`
+    );
+    console.log(JSON.parse(querStr));
+
+    // { duration: { $gte: '5' }, difficulty: 'easy' }// this is the filtering object
+    // { duration: { gte: '5' }, difficulty: 'easy' }// this is the query object that we need to put tht $ sign in it...
+    // gte, gt, lte, lt
 
     const query = Tour.find(queryObj);
 
@@ -18,7 +32,6 @@ exports.getAllTours = async (req, res) => {
 
     // Execute the query
     const tours = await query;
-
 
     // Send the response
     res.status(200).json({

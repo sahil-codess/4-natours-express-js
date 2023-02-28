@@ -30,7 +30,10 @@ exports.getAllTours = async (req, res) => {
 
     // 2) Sorting
     if (req.query.sort) {
-      query = query.sort(req.query.sort);
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+      console.log(query);
+      // sort ('price, ratginsaverage')
     }
 
     // const query = Tour.find().where('duration').equals(5).where('difficulty').where("easy")

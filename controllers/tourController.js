@@ -26,7 +26,7 @@ exports.getAllTours = async (req, res) => {
     // { duration: { gte: '5' }, difficulty: 'easy' }// this is the query object that we need to put tht $ sign in it...
     // gte, gt, lte, lt
 
-    const query = Tour.find(queryObj);
+    const query = Tour.find(JSON.parse(querStr));
 
     // const query = Tour.find().where('duration').equals(5).where('difficulty').where("easy")
 

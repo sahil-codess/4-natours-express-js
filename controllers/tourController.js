@@ -5,6 +5,13 @@ const Tour = require('./../models/tourModel');
 //   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 // );
 
+exports.aliasTopTours = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name, price, ratingsAverage, summary, difficulty';
+  next();
+};
+
 exports.getAllTours = async (req, res) => {
   try {
     console.log(req.query);
@@ -53,7 +60,7 @@ exports.getAllTours = async (req, res) => {
 
     if (req.query.page) {
       const numTours = await Tour.countDocuments();
-      if (skip >= numTours) throw Error("This Page does not exist!");
+      if (skip >= numTours) throw Error('This Page does not exist!');
     }
 
     // Execute the query

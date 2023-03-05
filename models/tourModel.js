@@ -64,6 +64,9 @@ tourSchema.virtual('durationWeek').get(function () {
   return this.duration / 7;
 });
 
+// Document middleware: runs in save() and in .create() methods but not in insertMany...
+tourSchema.pre('save', function () {});
+
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;

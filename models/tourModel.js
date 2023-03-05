@@ -55,6 +55,10 @@ const tourSchema = new mongoose.Schema(
       select: false,
     },
     startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -69,6 +73,12 @@ tourSchema.virtual('durationWeek').get(function () {
 // Document middleware: runs in save() and in .create() methods but not in insertMany...
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+// QUERY middleware
+tourSchema.pre('find', function (next) {
+  this.find({ secretTour: { $ne: true } });
   next();
 });
 

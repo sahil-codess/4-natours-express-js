@@ -83,9 +83,14 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
+// AGGREGATION MIDDLEWARE
+tourSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  next();
+});
+
 tourSchema.post(/^find/, function (docs, next) {
   console.log(`this query took ${Date.now() - this.start}`);
-  console.log(docs);
   next();
 });
 

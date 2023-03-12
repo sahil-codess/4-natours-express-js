@@ -8,10 +8,23 @@ const sendErrorDev = (err, req) => {
 };
 
 const sendErrorProd = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
+  // Operational error that we trust: send it to client
+  if (err.isOperational) {
+    res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+    });
+
+    // Programming error so we don't send the error message to the client
+  } else {
+    // 1) log the error to console
+    console.error('Error occured', err);
+    // 2) send generic message
+    res.status(500).json({
+      status: 'Error',
+      message: 'Something went wrong!...',
+    });
+  }
 };
 
 module.exports = (err, req, res, next) => {
